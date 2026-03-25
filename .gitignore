@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+test_results.xml
+
+# Distribution / packaging
+*.egg-info/
+*.egg
+
+# Virtual environment
+.venv
+env/
+venv/
+temp/
+output/
+recordings/
+
+# Environment variables
+.env
+
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.claude/
+
+# UV cache
+uv.lock
+
+# Caches
+.ruff_cache/
+.mypy_cache/
+.models/
+tmp/
+
+# Audio files
+*.pkf
