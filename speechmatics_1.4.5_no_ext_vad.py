@@ -21,6 +21,21 @@ from livekit.plugins import elevenlabs, openai, speechmatics  # noqa: E402
 logger = logging.getLogger("speechmatics-tester")
 logger.setLevel(logging.WARNING)
 
+# Dedicated logger for our own output (replaces print statements)
+out = logging.getLogger("out")
+out.setLevel(logging.DEBUG)
+_handler = logging.StreamHandler()
+_handler.setFormatter(
+    logging.Formatter("%(asctime)s - %(message)s", datefmt="%H:%M:%S")
+)
+out.addHandler(_handler)
+out.propagate = False
+
+
+def log(tag: str, message: str):
+    out.debug(f"{tag:<13} - {message}")
+
+
 # Silence logging noise
 for x in [
     "livekit",
@@ -83,26 +98,25 @@ async def entrypoint(ctx: JobContext):
 
     @session.on("user_input_transcribed")
     def on_transcription(ev):
-        tag = "FINAL" if ev.is_final else "INTERIM"
-        speaker = f" speaker={ev.speaker_id}" if ev.speaker_id else ""
-        lang = f" lang={ev.language}" if ev.language else ""
-        print(f'[STT {tag}]{speaker}{lang} "{ev.transcript}"')
+        tag = "STT FINAL" if ev.is_final else "STT INTERIM"
+        speaker = ev.speaker_id if ev.speaker_id else "UU"
+        log(tag, f'{speaker} "{ev.transcript}"')
 
     @session.on("user_state_changed")
     def on_user_state(ev):
-        print(f"[USER STATE] {ev.old_state} -> {ev.new_state}")
+        log("USER STATE", f"{ev.old_state} -> {ev.new_state}")
 
     @session.on("agent_state_changed")
     def on_agent_state(ev):
-        print(f"[AGENT STATE] {ev.old_state} -> {ev.new_state}")
+        log("AGENT STATE", f"{ev.old_state} -> {ev.new_state}")
 
     @session.on("error")
     def on_error(ev):
-        print(f"[ERROR] {ev.error}")
+        log("ERROR", str(ev.error))
 
     @session.on("close")
     def on_close(ev):
-        print(f"[SESSION CLOSED] reason={ev.reason}")
+        log("SESSION CLOSE", f"reason={ev.reason}")
 
     # -- start ----------------------------------------------------------------
 
