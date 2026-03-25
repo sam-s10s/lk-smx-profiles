@@ -22,18 +22,12 @@ logger = logging.getLogger("speechmatics-tester")
 logger.setLevel(logging.WARNING)
 
 # Dedicated logger for our own output (replaces print statements)
-out = logging.getLogger("out")
+out = logging.getLogger("lk-amx-profiles")
 out.setLevel(logging.DEBUG)
-_handler = logging.StreamHandler()
-_handler.setFormatter(
-    logging.Formatter("%(asctime)s - %(message)s", datefmt="%H:%M:%S")
-)
-out.addHandler(_handler)
-out.propagate = False
 
 
 def log(tag: str, message: str):
-    out.debug(f"{tag:<13} - {message}")
+    out.debug(f"{tag:<13}  {message}")
 
 
 # Silence logging noise
