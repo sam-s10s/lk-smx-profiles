@@ -44,4 +44,5 @@ uv.lock
 tmp/
 
 # Audio files
+samples/
 *.pkf
