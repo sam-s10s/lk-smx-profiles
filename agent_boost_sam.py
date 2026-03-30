@@ -12,17 +12,23 @@ from livekit.agents import (  # noqa: E402
     AgentSession,
     JobContext,
     RoomInputOptions,
-    TurnHandlingOptions,
     WorkerOptions,
     cli,
 )
-from livekit.plugins import elevenlabs, openai, speechmatics  # noqa: E402
+from livekit.plugins import (
+    elevenlabs,
+    openai,
+    speechmatics,
+    silero,
+    deepgram,
+    soniox,
+)  # noqa: E402
 
 logger = logging.getLogger("speechmatics-tester")
 logger.setLevel(logging.WARNING)
 
 # Dedicated logger for our own output (replaces print statements)
-out = logging.getLogger("lk-amx-profiles")
+out = logging.getLogger("lk-smx-profiles")
 out.setLevel(logging.DEBUG)
 
 
@@ -39,6 +45,13 @@ for x in [
     "asyncio",
 ]:
     logging.getLogger(x).setLevel(logging.ERROR)
+
+# Make others louder
+# for x in [
+#     "livekit.plugins.speechmatics",
+#     "speechmatics.voice",
+# ]:
+#     logging.getLogger(x).setLevel(logging.DEBUG)
 
 
 class SpeechmaticsAgent(Agent):
@@ -60,34 +73,31 @@ class SpeechmaticsAgent(Agent):
 async def entrypoint(ctx: JobContext):
     await ctx.connect()
 
-    # vad = silero.VAD.load( min_speech_duration=0.03)
+    vad = silero.VAD.load(min_speech_duration=0.3)
 
-    stt = speechmatics.STT(
+    stt_smx = speechmatics.STT(
         language="en",
         # External endpointing: Silero controls end-of-speech, then we call `stt.finalize()`.
         # turn_detection_mode=speechmatics.TurnDetectionMode.EXTERNAL,
-        turn_detection_mode=speechmatics.TurnDetectionMode.ADAPTIVE,
+        turn_detection_mode=speechmatics.TurnDetectionMode.FIXED,
         # end_of_utterance_silence_trigger=0.3,  # default is 0.5s, reduce to 0.3s for more aggressive endpointing
+        end_of_utterance_silence_trigger=0.5,
     )
+
+    smx_dg = deepgram.STT()
+
+    smx_soniox = soniox.STT()
 
     # Log STT events: metrics, errors, and all SpeechEventType values
     from livekit.agents.stt.stt import SpeechEventType
 
-    for ev_name in ("metrics_collected", "error") + tuple(
-        e.value for e in SpeechEventType
-    ):
-
-        def _log(ev, _name=ev_name):
-            logger.info(f"STT event -> {_name}: {ev}")
-
-        stt.on(ev_name, _log)
-
     # Create session (with new turn_handling)
     session = AgentSession(
-        stt=stt,
+        stt=smx_dg,
         # llm=openai.LLM(model="gpt-4.1-nano"),
         # tts=elevenlabs.TTS(voice_id="9BWtsMINqrJLrRacOk9x"),
-        turn_handling=TurnHandlingOptions(interruptions=True, turn_detection="stt"),
+        vad=vad,
+        allow_interruptions=False,
     )
 
     @session.on("user_input_transcribed")
@@ -99,6 +109,9 @@ async def entrypoint(ctx: JobContext):
     @session.on("user_state_changed")
     def on_user_state(ev):
         log("USER STATE", f"{ev.old_state} -> {ev.new_state}")
+        if ev.new_state == "listening":
+            log("FEOU", "Finalizing STT")
+            # stt_smx.finalize()
 
     @session.on("agent_state_changed")
     def on_agent_state(ev):

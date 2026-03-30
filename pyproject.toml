@@ -5,12 +5,15 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "livekit-agents~=1.5",
-    "livekit-plugins-speechmatics~=1.5",
-    "livekit-plugins-elevenlabs~=1.5",
-    "livekit-plugins-openai~=1.5",
-    "livekit-plugins-silero~=1.5",
-    "livekit-plugins-turn-detector~=1.5",
+    "speechmatics-rt==1.0.0",
+    "livekit-agents==1.4.2",
+    "livekit-plugins-speechmatics==1.4.2",
+    "livekit-plugins-elevenlabs==1.4.2",
+    "livekit-plugins-openai==1.4.2",
+    "livekit-plugins-deepgram==1.4.2",
+    "livekit-plugins-soniox==1.4.2",
+    "livekit-plugins-silero==1.4.2",
+    "livekit-plugins-turn-detector==1.4.2",
     "python-dotenv>=1.2.1",
     "pydub>=0.25",
     "sounddevice>=0.5",
@@ -27,12 +30,12 @@ line-length = 100
 [tool.ruff.lint]
 select = ["I", "F"]
 
-[tool.uv.sources]
-speechmatics-voice = { path = "../../speechmatics-python-sdk/sdk/voice", editable = true }
-livekit-plugins-speechmatics = { path = "../../livekit/livekit-agents/livekit-plugins/livekit-plugins-speechmatics", editable = true }
+# [tool.uv.sources]
+# speechmatics-voice = { path = "../../speechmatics-python-sdk/sdk/voice", editable = true }
+# livekit-plugins-speechmatics = { path = "../../livekit/livekit-agents/livekit-plugins/livekit-plugins-speechmatics", editable = true }
 
-[tool.uv]
-override-dependencies = [
-    "speechmatics-voice[smart]>=0.0.0",
-    "livekit-plugins-speechmatics>=0.0.0",
-]
+# [tool.uv]
+# override-dependencies = [
+#     "speechmatics-voice[smart]>=0.0.0",
+#     "livekit-plugins-speechmatics>=0.0.0",
+# ]
