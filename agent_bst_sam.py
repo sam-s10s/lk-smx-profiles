@@ -79,9 +79,9 @@ async def entrypoint(ctx: JobContext):
         language="en",
         # External endpointing: Silero controls end-of-speech, then we call `stt.finalize()`.
         # turn_detection_mode=speechmatics.TurnDetectionMode.EXTERNAL,
-        turn_detection_mode=speechmatics.TurnDetectionMode.FIXED,
+        turn_detection_mode=speechmatics.TurnDetectionMode.SMART_TURN,
         # end_of_utterance_silence_trigger=0.3,  # default is 0.5s, reduce to 0.3s for more aggressive endpointing
-        end_of_utterance_silence_trigger=0.5,
+        # end_of_utterance_silence_trigger=1.9,
     )
 
     smx_dg = deepgram.STT()
@@ -93,25 +93,27 @@ async def entrypoint(ctx: JobContext):
 
     # Create session (with new turn_handling)
     session = AgentSession(
-        stt=smx_dg,
+        stt=stt_smx,
         # llm=openai.LLM(model="gpt-4.1-nano"),
         # tts=elevenlabs.TTS(voice_id="9BWtsMINqrJLrRacOk9x"),
-        vad=vad,
+        turn_detection="stt",
+        # vad="stt",
         allow_interruptions=False,
     )
 
     @session.on("user_input_transcribed")
     def on_transcription(ev):
         tag = "STT FINAL" if ev.is_final else "STT INTERIM"
-        speaker = ev.speaker_id if ev.speaker_id else "UU"
-        log(tag, f'{speaker} "{ev.transcript}"')
+        if tag == "STT FINAL":
+            speaker = ev.speaker_id if ev.speaker_id else "UU"
+            log(tag, f'{speaker} "{ev.transcript}"')
 
     @session.on("user_state_changed")
     def on_user_state(ev):
         log("USER STATE", f"{ev.old_state} -> {ev.new_state}")
-        if ev.new_state == "listening":
-            log("FEOU", "Finalizing STT")
-            # stt_smx.finalize()
+        # if ev.new_state == "listening":
+        #     log("FEOU", "Finalizing STT")
+        #     # stt_smx.finalize()
 
     @session.on("agent_state_changed")
     def on_agent_state(ev):
