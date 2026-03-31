@@ -40,10 +40,10 @@ AGENT_MODE=1 uv run agent.py console
 
 ## Running the agent
 
-Start the voice agent and connect it to a room:
+Start the voice agent and connect it to a room (using `smx` for Speechmatics, `dg` for Deepgram, or `soniox` for Soniox):
 
 ```sh
-uv run agent.py connect --room smx-test-001
+STT=smx uv run agent.py connect --room smx-test-001
 ```
 
 The agent will join the room, greet any participant that arrives, and respond to spoken questions using the Speechmatics STT pipeline.
