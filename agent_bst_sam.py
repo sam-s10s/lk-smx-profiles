@@ -73,15 +73,12 @@ class SpeechmaticsAgent(Agent):
 async def entrypoint(ctx: JobContext):
     await ctx.connect()
 
-    vad = silero.VAD.load(min_speech_duration=0.3)
+    vad = silero.VAD.load(min_speech_duration=0.1, min_silence_duration=0.2)
 
     stt_smx = speechmatics.STT(
         language="en",
-        # External endpointing: Silero controls end-of-speech, then we call `stt.finalize()`.
-        # turn_detection_mode=speechmatics.TurnDetectionMode.EXTERNAL,
-        turn_detection_mode=speechmatics.TurnDetectionMode.SMART_TURN,
-        # end_of_utterance_silence_trigger=0.3,  # default is 0.5s, reduce to 0.3s for more aggressive endpointing
-        # end_of_utterance_silence_trigger=1.9,
+        turn_detection_mode=speechmatics.TurnDetectionMode.FIXED,
+        end_of_utterance_silence_trigger=0.9,
     )
 
     smx_dg = deepgram.STT()
@@ -97,8 +94,8 @@ async def entrypoint(ctx: JobContext):
         # llm=openai.LLM(model="gpt-4.1-nano"),
         # tts=elevenlabs.TTS(voice_id="9BWtsMINqrJLrRacOk9x"),
         turn_detection="stt",
-        # vad="stt",
-        allow_interruptions=False,
+        # vad=vad,
+        # allow_interruptions=False,
     )
 
     @session.on("user_input_transcribed")
@@ -111,9 +108,9 @@ async def entrypoint(ctx: JobContext):
     @session.on("user_state_changed")
     def on_user_state(ev):
         log("USER STATE", f"{ev.old_state} -> {ev.new_state}")
-        # if ev.new_state == "listening":
-        #     log("FEOU", "Finalizing STT")
-        #     # stt_smx.finalize()
+        if ev.new_state == "listening":
+            log("FEOU", "Finalizing STT")
+            stt_smx.finalize()
 
     @session.on("agent_state_changed")
     def on_agent_state(ev):

@@ -1,0 +1,20 @@
+❯ uv run agent_bst_sam.py connect --room sam-test-3
+    09:36:12.845 DEBUG… lk-smx-profiles    AGENT STATE    initializing -> listening {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    09:36:19.303 DEBUG… lk-smx-profiles    USER STATE     listening -> speaking {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    09:36:21.356 DEBUG… lk-smx-profiles    STT FINAL      S1 "Hey, can you tell me a joke?" {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    09:36:21.357 DEBUG… lk-smx-profiles    USER STATE     speaking -> listening {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+                 DEBUG… lk-smx-profiles    FEOU           Finalizing STT {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    09:36:23.956 DEBUG… lk-smx-profiles    USER STATE     listening -> speaking {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    09:36:27.549 DEBUG… lk-smx-profiles    STT FINAL      S1 "Would you recommend me a book?" {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    09:36:27.550 DEBUG… lk-smx-profiles    USER STATE     speaking -> listening {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+                 DEBUG… lk-smx-profiles    FEOU           Finalizing STT {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    09:36:30.026 DEBUG… lk-smx-profiles    USER STATE     listening -> speaking {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    09:36:31.515 DEBUG… lk-smx-profiles    STT FINAL      S1 "Maybe." {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    09:36:31.516 DEBUG… lk-smx-profiles    USER STATE     speaking -> listening {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    09:36:31.517 DEBUG… lk-smx-profiles    FEOU           Finalizing STT {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    09:36:35.036 DEBUG… lk-smx-profiles    USER STATE     listening -> speaking {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    09:36:36.594 DEBUG… lk-smx-profiles    STT FINAL      S1 "Maybe sci fi." {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+                 DEBUG… lk-smx-profiles    USER STATE     speaking -> listening {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+                 DEBUG… lk-smx-profiles    FEOU           Finalizing STT {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    09:36:44.639 DEBUG… lk-smx-profiles    SESSION CLOSE  reason=CloseReason.PARTICIPANT_DISCONNECTED {"pid": 37131, "job_id": "simulated-job-5fa52c3195b2", "room_id": "RM_n9UPSiBzbQiM"}
+    
