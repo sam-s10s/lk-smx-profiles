@@ -30,6 +30,14 @@ uv sync
 
 That's it. Everything else is handled by `uv run`.
 
+## Running the agent (console)
+
+Start the voice agent with LLM and TTS (`AGENT_MODE-1` will enable the LLM and TTS):
+
+```sh
+AGENT_MODE=1 uv run agent.py console
+```
+
 ## Running the agent
 
 Start the voice agent and connect it to a room:

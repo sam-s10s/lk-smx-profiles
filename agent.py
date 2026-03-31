@@ -7,7 +7,10 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path=Path(__file__).resolve().parent / ".env", override=False)
 os.environ.setdefault("NUM_CPUS", "2")
 
+AGENT_MODE = os.getenv("AGENT_MODE", "0") == "1"
+
 from livekit.agents import (  # noqa: E402
+    NOT_GIVEN,
     Agent,
     AgentSession,
     JobContext,
@@ -32,9 +35,10 @@ class SpeechmaticsAgent(Agent):
 
     async def on_enter(self):
         # greet when entering the room
-        await self.session.generate_reply(
-            instructions="Greet the user warmly and ask how you can help."
-        )
+        if AGENT_MODE:
+            await self.session.generate_reply(
+                instructions="Greet the user warmly and ask how you can help."
+            )
 
 
 async def entrypoint(ctx: JobContext):
@@ -45,6 +49,10 @@ async def entrypoint(ctx: JobContext):
         turn_detection_mode=speechmatics.TurnDetectionMode.FIXED,
         end_of_utterance_silence_trigger=0.6,
     )
+
+    llm = openai.LLM(model="gpt-4.1-nano")
+
+    tts = elevenlabs.TTS(voice_id="9BWtsMINqrJLrRacOk9x")
 
     # Log STT events: metrics, errors, and all SpeechEventType values
     from livekit.agents.stt.stt import SpeechEventType
@@ -59,10 +67,10 @@ async def entrypoint(ctx: JobContext):
         stt.on(ev_name, _log)
     session = AgentSession(
         stt=stt,
-        llm=openai.LLM(model="gpt-4.1-nano"),
-        tts=elevenlabs.TTS(voice_id="9BWtsMINqrJLrRacOk9x"),
+        llm=llm if AGENT_MODE else NOT_GIVEN,
+        tts=tts if AGENT_MODE else NOT_GIVEN,
         turn_detection="stt",
-        allow_interruptions=False,
+        # allow_interruptions=False,
     )
 
     @session.on("user_state_changed")
