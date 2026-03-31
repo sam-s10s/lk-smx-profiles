@@ -30,15 +30,3 @@ dev = [
 line-length = 100
 [tool.ruff.lint]
 select = ["I", "F"]
-
-[tool.uv.sources]
-speechmatics-rt = { path = "../../speechmatics-python-sdk/sdk/rt", editable = true }
-speechmatics-voice = { path = "../../speechmatics-python-sdk/sdk/voice", editable = true }
-# livekit-plugins-speechmatics = { path = "../../livekit/livekit-agents/livekit-plugins/livekit-plugins-speechmatics", editable = true }
-
-[tool.uv]
-override-dependencies = [
-    "speechmatics-rt>=0.0.0",
-    "speechmatics-voice[smart]>=0.0.0",
-    # "livekit-plugins-speechmatics>=0.0.0",
-]

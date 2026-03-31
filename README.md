@@ -35,7 +35,7 @@ That's it. Everything else is handled by `uv run`.
 Start the voice agent and connect it to a room:
 
 ```sh
-uv run agent_bst_sam.py connect --room sam-test-3
+uv run agent.py connect --room smx-test-001
 ```
 
 The agent will join the room, greet any participant that arrives, and respond to spoken questions using the Speechmatics STT pipeline.
@@ -45,7 +45,7 @@ The agent will join the room, greet any participant that arrives, and respond to
 In a separate terminal, publish a WAV file into the same room:
 
 ```sh
-uv run publish_wav.py samples/bst_sample_user.wav --room sam-test-3
+uv run publish.py samples/bst_sample_1.wav --room smx-test-001
 ```
 
 This joins the room as a fake microphone participant, streams the audio at realtime speed, and plays it through your local speakers so you can hear what's being sent.
@@ -53,7 +53,7 @@ This joins the room as a fake microphone participant, streams the audio at realt
 By default it waits 5 seconds after connecting before it starts streaming, giving the agent time to settle in. You can change that:
 
 ```sh
-uv run publish_wav.py samples/bst_sample_user.wav --room sam-test-3 --seconds 10
+uv run publish.py samples/bst_sample_1.wav --room smx-test-001 --seconds 1
 ```
 
 Or skip the wait entirely with `--seconds 0`.
