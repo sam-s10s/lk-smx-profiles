@@ -54,22 +54,12 @@ async def entrypoint(ctx: JobContext):
 
     tts = elevenlabs.TTS(voice_id="9BWtsMINqrJLrRacOk9x")
 
-    # Log STT events: metrics, errors, and all SpeechEventType values
-    from livekit.agents.stt.stt import SpeechEventType
-
-    for ev_name in ("metrics_collected", "error") + tuple(
-        e.value for e in SpeechEventType
-    ):
-
-        def _log(ev, _name=ev_name):
-            logger.info(f"STT event {_name}: {ev}")
-
-        stt.on(ev_name, _log)
     session = AgentSession(
         stt=stt,
         llm=llm if AGENT_MODE else NOT_GIVEN,
         tts=tts if AGENT_MODE else NOT_GIVEN,
         turn_detection="stt",
+        vad=NOT_GIVEN,
         # allow_interruptions=False,
     )
 
