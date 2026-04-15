@@ -100,7 +100,7 @@ async def entrypoint(ctx: JobContext):
     await ctx.connect()
 
     # Low min_speech_duration so it picks up short utterances (the default is too high)
-    vad = silero.VAD.load(min_silence_duration=0.15, min_speech_duration=0.15)
+    vad = silero.VAD.load()  # min_silence_duration=0.15, min_speech_duration=0.15)
 
     # Lazy-init so we only connect to the provider we're actually using
     stt_providers = {
