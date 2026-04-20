@@ -102,7 +102,7 @@ async def entrypoint(ctx: JobContext):
         # min_speech_duration=0.2,
         # -> Speaker stopped talking
         # deactivation_threshold=0.3,
-        min_silence_duration=2.0,
+        min_silence_duration=0.3,
     )
 
     # Speechmatics STT
