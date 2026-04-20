@@ -1,12 +1,13 @@
 """
-LiveKit voice agent with Speechmatics STT.
+LiveKit voice agent with swappable STT providers.
 
-Joins a LiveKit room and transcribes speech via Speechmatics.
-With AGENT_MODE on it also runs an LLM and TTS so it can hold an
+Joins a LiveKit room and transcribes speech via Speechmatics, Deepgram, or
+Soniox. With AGENT_MODE on it also runs an LLM and TTS so it can hold an
 actual conversation rather than just printing transcripts.
 
 Environment variables:
     AGENT_MODE  set to "1" to enable LLM + TTS (default: transcribe-only)
+    STT         which provider to use: "smx" | "dg" | "soniox" (default: "smx")
 """
 
 import logging
@@ -29,15 +30,18 @@ from livekit.agents import (
     cli,
 )
 from livekit.plugins import (
+    deepgram,
     elevenlabs,
     openai,
     silero,
+    soniox,
     speechmatics,
 )
 
 # ── Configuration ──────────────────────────────────────────────────────────────
 
 AGENT_MODE = os.getenv("AGENT_MODE", "0") == "1"
+STT = os.getenv("STT", "smx")
 
 # ── Logging ────────────────────────────────────────────────────────────────────
 #
@@ -102,14 +106,20 @@ async def entrypoint(ctx: JobContext):
         # min_speech_duration=0.2,
         # -> Speaker stopped talking
         # deactivation_threshold=0.3,
-        min_silence_duration=2.0,
+        # min_silence_duration=0.2,
     )
 
-    # Speechmatics STT
-    stt = speechmatics.STT(
-        language="en",
-        turn_detection_mode=speechmatics.TurnDetectionMode.EXTERNAL,
-    )
+    # Lazy-init so we only connect to the provider we're actually using
+    stt_providers = {
+        "smx": lambda: speechmatics.STT(
+            language="en",
+            turn_detection_mode=speechmatics.TurnDetectionMode.EXTERNAL,
+        ),
+        "dg": lambda: deepgram.STT(),
+        "soniox": lambda: soniox.STT(),
+    }
+    stt = stt_providers[STT]()
+    _log("STT", f"Using {STT} provider")
 
     llm = openai.LLM(model="gpt-4.1-nano")
     tts = elevenlabs.TTS(voice_id="9BWtsMINqrJLrRacOk9x")
